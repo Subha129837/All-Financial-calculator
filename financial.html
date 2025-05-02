@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Financial Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+    .calculator-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 400px;
+      margin: 10px 0;
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.1em;
+      text-align: center;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <h2>Simple & Compound Interest</h2>
+    <label for="principal">Principal Amount (₹):</label>
+    <input type="number" id="principal" placeholder="e.g. 100000">
+    <label for="rate">Annual Interest Rate (%):</label>
+    <input type="number" id="rate" placeholder="e.g. 7">
+    <label for="years">Time (Years):</label>
+    <input type="number" id="years" placeholder="e.g. 5">
+    <label for="type">Type of Interest:</label>
+    <select id="type">
+      <option value="simple">Simple Interest</option>
+      <option value="compound">Compound Interest</option>
+    </select>
+    <button onclick="calculateFinancials()">Calculate</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="calculator-container">
+    <h2>SIP Calculator</h2>
+    <label for="sipAmount">Monthly Investment (₹):</label>
+    <input type="number" id="sipAmount" placeholder="e.g. 2000">
+    <label for="sipRate">Annual Return Rate (%):</label>
+    <input type="number" id="sipRate" placeholder="e.g. 12">
+    <label for="sipYears">Time (Years):</label>
+    <input type="number" id="sipYears" placeholder="e.g. 10">
+    <button onclick="calculateSIP()">Calculate SIP</button>
+    <div class="result" id="sipResult"></div>
+  </div>
+
+  <div class="calculator-container">
+    <h2>EMI Calculator</h2>
+    <label for="loanAmount">Loan Amount (₹):</label>
+    <input type="number" id="loanAmount" placeholder="e.g. 500000">
+    <label for="emiRate">Annual Interest Rate (%):</label>
+    <input type="number" id="emiRate" placeholder="e.g. 10">
+    <label for="emiYears">Loan Tenure (Years):</label>
+    <input type="number" id="emiYears" placeholder="e.g. 5">
+    <button onclick="calculateEMI()">Calculate EMI</button>
+    <div class="result" id="emiResult"></div>
+  </div>
+
+  <div class="calculator-container">
+    <h2>ROI Calculator</h2>
+    <label for="roiGain">Total Gain (₹):</label>
+    <input type="number" id="roiGain" placeholder="e.g. 150000">
+    <label for="roiCost">Total Investment (₹):</label>
+    <input type="number" id="roiCost" placeholder="e.g. 100000">
+    <button onclick="calculateROI()">Calculate ROI</button>
+    <div class="result" id="roiResult"></div>
+  </div>
+
+  <script>
+    function calculateFinancials() {
+      const principal = parseFloat(document.getElementById("principal").value);
+      const rate = parseFloat(document.getElementById("rate").value);
+      const years = parseFloat(document.getElementById("years").value);
+      const type = document.getElementById("type").value;
+      let result = 0;
+
+      if (isNaN(principal) || isNaN(rate) || isNaN(years)) {
+        document.getElementById("result").innerText = "Please fill all fields correctly.";
+        return;
+      }
+
+      if (type === "simple") {
+        result = (principal * rate * years) / 100;
+      } else {
+        result = principal * Math.pow((1 + rate / 100), years) - principal;
+      }
+
+      document.getElementById("result").innerText = `Total Interest: ₹${result.toFixed(2)}`;
+    }
+
+    function calculateSIP() {
+      const monthly = parseFloat(document.getElementById("sipAmount").value);
+      const rate = parseFloat(document.getElementById("sipRate").value) / 12 / 100;
+      const months = parseFloat(document.getElementById("sipYears").value) * 12;
+
+      if (isNaN(monthly) || isNaN(rate) || isNaN(months)) {
+        document.getElementById("sipResult").innerText = "Please fill all fields correctly.";
+        return;
+      }
+
+      const futureValue = monthly * ((Math.pow(1 + rate, months) - 1) * (1 + rate)) / rate;
+      document.getElementById("sipResult").innerText = `Future Value: ₹${futureValue.toFixed(2)}`;
+    }
+
+    function calculateEMI() {
+      const loan = parseFloat(document.getElementById("loanAmount").value);
+      const annualRate = parseFloat(document.getElementById("emiRate").value);
+      const years = parseFloat(document.getElementById("emiYears").value);
+      const monthlyRate = annualRate / 12 / 100;
+      const months = years * 12;
+
+      if (isNaN(loan) || isNaN(monthlyRate) || isNaN(months)) {
+        document.getElementById("emiResult").innerText = "Please fill all fields correctly.";
+        return;
+      }
+
+      const emi = loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+      document.getElementById("emiResult").innerText = `Monthly EMI: ₹${emi.toFixed(2)}`;
+    }
+
+    function calculateROI() {
+      const gain = parseFloat(document.getElementById("roiGain").value);
+      const cost = parseFloat(document.getElementById("roiCost").value);
+
+      if (isNaN(gain) || isNaN(cost) || cost === 0) {
+        document.getElementById("roiResult").innerText = "Please fill all fields correctly.";
+        return;
+      }
+
+      const roi = ((gain - cost) / cost) * 100;
+      document.getElementById("roiResult").innerText = `ROI: ${roi.toFixed(2)}%`;
+    }
+  </script>
+</body>
+</html>
